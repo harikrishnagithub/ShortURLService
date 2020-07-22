@@ -1,4 +1,4 @@
-# ShortenURL
+# ShortenURLService
 # Overview
    Short URL service provides the ability for a user to generate the shorter URL from the Full URL.This Api Provides tiny URL generator functionality for single URL and it also have capability to process bulk URLs contains in a file. When user sends a single URL it generate the response with shorten URL and Full URL. User wanted to process bulk URLs then it has a capability to process it asynchronously. Here user will upload the file which has contains URL’s then API provides Job id. User can track the processing of the Job based on job id. It provides the status of the job and any failed URLS in it.
  
@@ -126,23 +126,32 @@
  #Approach:
   **Generating Unique code** 
   
-          I have written a code to generate a unique 6 digit alphanumeric code for short URL. To generate the code we have appended the url with system timestamp, ip address and base64 alphanumeric random code.
-       then for this unique URL generated the hash code based on configured hash code generation types like MURMUR3, CRC32 etc.
-       Now generated 6 digit base64 encoded string with the above hash code. i have provide the configuration to selete the type of hashing.
+              I have written a code to generate a unique 6 digit alphanumeric code for short URL. To generate the code we have 
+          appended the url with system timestamp, ip address and base64 alphanumeric random code. Then for this unique URL generated
+          the hash code based on configured hash code generation types like MURMUR3, CRC32 etc.
+          
+          Now generated 6 digit base64 encoded string with the above hash code. i have provide the configuration to selete the type of hashing.
        
        `application.hashing.hashtype=MURMUR3`
        
        In simple words,
            Original URL + System Timestamp + ip address + Random alphanumeric number ---> Hash code(MURMUR3 hashcode) --> Base 64 code(6 digit)
-       Once unique code is generated it will check against the database if key is not used then it will proceed to save. if unique code is already used then it will generate the new code untill code is available to use.
-     System has a feature to upload a file which has more number of URLs. i have developed asynchronoues process to process the bulk urls.Here i have used **Redis messaging Queue** which simple and high perfomant messaging service. Once file uploaded through /UPloadfile endpoint it will create a job in database and publish the job id to message publisher.
-     Then Message listerner pick the message and fetch the job from database then it start processing. Here file will be processed in chunks. Chunk size is configured in applciation.properties. 
+       Once unique code is generated it will check against the database if key is not used then it will proceed to save. If unique code is already used
+       then it will generate the new code untill code is available to use.
+       
+       
+       System has a feature to upload a file which has more number of URLs. I have developed asynchronoues process to process the bulk urls. 
+       
+       Here I have used **Redis messaging Queue** which simple and high perfomant messaging service. Once file uploaded through "/UPloadfile"
+       endpoint it will create a job in database and publish the job id to message publisher.  
+       Then Message listerner pick the message and fetch the job from  database then it start processing. Here file will be processed in chunks.
+       Chunk size is configured in applciation.properties. 
      
      `application.custom.processslotsize =1000`
      
-          It will pick first 1000 urls then process it and store it in database the it will pick another 1000 and so on. 
-      I have provided the end point "urlModifier/?jobid=1234" to trach the job. it gives all failed and success urls in that job.
-      One more end point "urlModifier/allactivejobs" to fetch all active jobs.
+         It will pick first 1000 urls then process it and store it in database the it will pick another 1000 and so on. I have provided the end point 
+      "urlModifier/?jobid=1234" to trach the job. it gives all failed and success urls in that job.
+         One more end point "urlModifier/allactivejobs" to fetch all active jobs.
       "urlModifier/shorturls/?jobid='abdhw2'" endpoint is for fetching the all generated short url from the perticulat file.
       
    #Data Base
