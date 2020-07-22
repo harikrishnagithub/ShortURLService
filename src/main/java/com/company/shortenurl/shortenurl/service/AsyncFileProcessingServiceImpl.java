@@ -18,9 +18,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  *  This class is Async File Processing Service is for processing the bulk URLS asynchronously.
@@ -51,12 +54,8 @@ public class AsyncFileProcessingServiceImpl implements AsyncFileProcessingServic
         File file = UrlUtility.writeByte(fileByteArray);
         List<String> result = new ArrayList<>();
         try {
-            String line;
-            InputStream is = new FileInputStream(file);
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            while ((line = br.readLine()) != null) {
-                result.add(line);
-            }
+            Stream<String> stream = Files.lines(Paths.get(file.getAbsolutePath()));
+            result = stream.collect(Collectors.toList());
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
@@ -72,6 +71,7 @@ public class AsyncFileProcessingServiceImpl implements AsyncFileProcessingServic
         }
         jobDefinition = bulkURLProcessingJobRepository.find(jobDefinition.getJobId());
         jobDefinition.setStatus(JobStatus.COMPLETED);
+        jobDefinition.setFile(null);
         bulkURLProcessingJobRepository.update(jobDefinition);
     }
     public Integer getCounter() {

@@ -6,8 +6,17 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.net.UnknownHostException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Base64;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Utility class for performing operations.
@@ -33,6 +42,25 @@ public class UrlUtility {
     }
 
     /**
+     * Method validate the URL is valid or not.
+     * @param fullUrl
+     * @return
+     */
+    public static Boolean isValidUrl(String fullUrl) {
+        try {
+            //String urlPattern = "^http(s{0,1})://[a-zA-Z0-9_/\\-\\.]+\\.([A-Za-z/]{2,5})[a-zA-Z0-9_/\\&\\?\\=\\-\\.\\~\\%]*";
+            //return fullUrl.matches(urlPattern);
+            new URL(fullUrl).toURI();
+            return true;
+        }
+
+        // If there was an Exception
+        // while creating URL object
+        catch (Exception e) {
+            return false;
+        }
+    }
+    /**
      *  Method for Encoding the bytes to string.
      * @param bytes
      * @return
@@ -56,22 +84,13 @@ public class UrlUtility {
      * @return
      */
     public static File writeByte(byte[] bytes) {
-        String FILEPATH = "inputfile_"+System.currentTimeMillis()+".txt";
+        String FILEPATH = "Inputfile_"+System.currentTimeMillis()+".txt";
         File file = new File(FILEPATH);
         try {
-
-            // Initialize a pointer
-            // in file using OutputStream
-            OutputStream
-                    os
-                    = new FileOutputStream(file);
-
-            // Starts writing the bytes in it
-            os.write(bytes);
-            // Close the file
-            os.close();
+            Path path = Paths.get(FILEPATH);
+            Files.write(path, bytes).getFileSystem();
         } catch (Exception e) {
-            System.out.println("Exception: " + e);
+            System.out.println("Exception during parsing the file: " + e);
         }
         return file;
     }

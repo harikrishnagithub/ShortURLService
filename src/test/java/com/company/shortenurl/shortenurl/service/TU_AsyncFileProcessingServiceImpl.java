@@ -67,8 +67,6 @@ public class TU_AsyncFileProcessingServiceImpl {
             e.printStackTrace();
         }
         assertEquals(JobStatus.COMPLETED, jobDefinition.getStatus());
-        assertFalse(jobDefinition.getFile().isEmpty());
-
     }
 
     private JobDefinition createJobDefinition() {

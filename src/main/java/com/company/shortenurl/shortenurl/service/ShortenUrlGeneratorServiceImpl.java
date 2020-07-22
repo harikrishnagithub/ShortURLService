@@ -68,7 +68,9 @@ public class ShortenUrlGeneratorServiceImpl implements ShortenUrlGeneratorServic
      */
     @Override
     public UrlResource createShortUrl(String originalUrl) {
-        try {
+        if(!UrlUtility.isValidUrl(originalUrl))
+            throw  new FailedToCreateShortURLException("invalid Url. Please send the valid URL.");
+            try {
             UrlResource urlResourceEntity = getUrlRecourse(originalUrl);
             urlResourceEntity.setOriginalUrl(originalUrl);
             URLShorteningRepository.add(urlResourceEntity);
@@ -138,7 +140,10 @@ public class ShortenUrlGeneratorServiceImpl implements ShortenUrlGeneratorServic
         List<String> failedUrlList = new ArrayList<>();
         urlList.stream().forEach(url -> {
             try {
-                urlRecourseList.add(getUrlRecourse(url));
+                if(UrlUtility.isValidUrl(url)) {
+                    urlRecourseList.add(getUrlRecourse(url));
+                }else
+                    failedUrlList.add(url);
             } catch (Exception e) {
                 failedUrlList.add(url);
                 e.printStackTrace();
