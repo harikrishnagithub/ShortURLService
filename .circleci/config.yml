@@ -41,7 +41,7 @@ jobs:
 
       # run tests!
       - run: gradle test
-      - run: gradle checkstyle
+      - run: gradle checkstyleMain
   lint:
     executor: default
     steps:
