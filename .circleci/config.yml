@@ -3,11 +3,13 @@
 # Check https://circleci.com/docs/2.0/language-java/ for more details
 #
 version: 2.1
+executors:
+  default:
+    docker:
+      - image: circleci/openjdk:8-jdk
 jobs:
   build:
-    docker:
-      # specify the version you desire here
-      - image: circleci/openjdk:8-jdk
+    executor: default
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -16,7 +18,7 @@ jobs:
 
     working_directory: ~/repo
 
-    environment:
+    environment: @
       # Customize the JVM maximum heap limit
       JVM_OPTS: -Xmx3200m
       TERM: dumb
@@ -39,4 +41,15 @@ jobs:
 
       # run tests!
       - run: gradle test
+  lint:
+    executor: default
+    steps:
+      - run: ./gradlew :checkstyleMain
 
+workflows:
+  build_and_test:
+    jobs:
+      - build
+      - lint:
+          requires:
+            - build
