@@ -44,7 +44,7 @@ jobs:
   lint:
     executor: default
     steps:
-      - run: ./gradlew :checkstyleMain
+      - run: gradle checkstyle
 
 workflows:
   build_and_test:
