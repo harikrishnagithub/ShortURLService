@@ -29,7 +29,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -123,7 +124,8 @@ class TU_ShortenUrlGeneratorServiceImpl {
             File file= new File("test.txt");
             byte[] encoded = Files.readAllBytes(Paths.get("test.txt"));
             jobDefinition.setFile(UrlUtility.getEncodedString(encoded));
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
         jobDefinition.setStatus(JobStatus.QUEUED);

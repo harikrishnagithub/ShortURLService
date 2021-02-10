@@ -1,17 +1,17 @@
 package com.company.shortenurl.shortenurl.service;
 
-import com.company.shortenurl.shortenurl.exceptions.FailedToCreateShortURLException;
 import com.company.shortenurl.shortenurl.exceptions.FailedToProcessFileException;
-import com.company.shortenurl.shortenurl.exceptions.InvalidJobIdentifierException;
-import com.company.shortenurl.shortenurl.model.BulkUrlRequest;
-import com.company.shortenurl.shortenurl.model.JobDefinition;
-import com.company.shortenurl.shortenurl.model.JobStatus;
-import com.company.shortenurl.shortenurl.model.UrlResource;
-import com.company.shortenurl.shortenurl.model.URLRecourseBuilder;
+import com.company.shortenurl.shortenurl.exceptions.FailedToCreateShortURLException;
 import com.company.shortenurl.shortenurl.exceptions.InvalidHashTypeException;
+import com.company.shortenurl.shortenurl.exceptions.InvalidJobIdentifierException;
 import com.company.shortenurl.shortenurl.exceptions.InvalidShortUrlException;
 import com.company.shortenurl.shortenurl.exceptions.NotImplementedException;
 import com.company.shortenurl.shortenurl.hash.HashFunctionFactory;
+import com.company.shortenurl.shortenurl.model.BulkUrlRequest;
+import com.company.shortenurl.shortenurl.model.JobDefinition;
+import com.company.shortenurl.shortenurl.model.JobStatus;
+import com.company.shortenurl.shortenurl.model.URLRecourseBuilder;
+import com.company.shortenurl.shortenurl.model.UrlResource;
 import com.company.shortenurl.shortenurl.queue.MessagePublisherImpl;
 import com.company.shortenurl.shortenurl.repository.BulkUrlProcessingJobRepository;
 import com.company.shortenurl.shortenurl.repository.UrlShorteningRepository;
@@ -37,14 +37,14 @@ import java.util.Random;
 public class ShortenUrlGeneratorServiceImpl implements ShortenUrlGeneratorService {
 
     @Autowired
-    HashFunctionFactory hashFunctionFactory;
+    private HashFunctionFactory hashFunctionFactory;
     @Autowired
-    MessagePublisherImpl messagePublisherImpl;
+    private MessagePublisherImpl messagePublisherImpl;
 
     @Autowired
-    UrlShorteningRepository URLShorteningRepository;
+    private UrlShorteningRepository urlShorteningRepository;
     @Autowired
-    BulkUrlProcessingJobRepository bulkURLProcessingJobRepository;
+    private BulkUrlProcessingJobRepository bulkURLProcessingJobRepository;
 
     /**
      * Method to retrieve the original URL based on short url
@@ -54,9 +54,10 @@ public class ShortenUrlGeneratorServiceImpl implements ShortenUrlGeneratorServic
     @Override
     public UrlResource getOriginalUrl(String shortUrl)  {
         try {
-            UrlResource urlResourceEntity = URLShorteningRepository.find(shortUrl);
+            UrlResource urlResourceEntity = urlShorteningRepository.find(shortUrl);
             return urlResourceEntity;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new InvalidShortUrlException();
         }
     }
@@ -68,14 +69,16 @@ public class ShortenUrlGeneratorServiceImpl implements ShortenUrlGeneratorServic
      */
     @Override
     public UrlResource createShortUrl(String originalUrl) {
-        if(!UrlUtility.isValidUrl(originalUrl))
-            throw  new FailedToCreateShortURLException("invalid Url. Please send the valid URL.");
-            try {
+        if (!UrlUtility.isValidUrl(originalUrl)) {
+            throw new FailedToCreateShortURLException("invalid Url. Please send the valid URL.");
+        }
+        try {
             UrlResource urlResourceEntity = getUrlRecourse(originalUrl);
             urlResourceEntity.setOriginalUrl(originalUrl);
-            URLShorteningRepository.add(urlResourceEntity);
+            urlShorteningRepository.add(urlResourceEntity);
             return urlResourceEntity;
-        }catch (InvalidHashTypeException | NotImplementedException ex){
+        }
+        catch (InvalidHashTypeException | NotImplementedException ex) {
             throw  new FailedToCreateShortURLException(ex);
         }
     }
@@ -92,7 +95,7 @@ public class ShortenUrlGeneratorServiceImpl implements ShortenUrlGeneratorServic
         UrlResource urlResource = null;
         while (!isKeyAvailableToUse) {
             String shortUrl = generateUniqueCode(originalUrl);
-            urlResource = URLShorteningRepository.find(shortUrl);
+            urlResource = urlShorteningRepository.find(shortUrl);
             if (urlResource == null) {
                 urlResource = new URLRecourseBuilder().createURLResourse();
                 urlResource.setShortUrl(shortUrl);
@@ -137,19 +140,22 @@ public class ShortenUrlGeneratorServiceImpl implements ShortenUrlGeneratorServic
     @Override
     public void bulkGenerateShortenUrl(String jobId, List<String> urlList) throws InvalidHashTypeException, NotImplementedException {
         final List<UrlResource> urlRecourseList = new ArrayList<>();
-        List<String> failedUrlList = new ArrayList<>();
+        List<String> failedUrlList = new ArrayList<String>();
         urlList.stream().forEach(url -> {
             try {
-                if(UrlUtility.isValidUrl(url)) {
+                if (UrlUtility.isValidUrl(url)) {
                     urlRecourseList.add(getUrlRecourse(url));
-                }else
+                }
+                else {
                     failedUrlList.add(url);
-            } catch (Exception e) {
+                }
+            }
+            catch (Exception e) {
                 failedUrlList.add(url);
                 e.printStackTrace();
             }
         });
-        URLShorteningRepository.addAll(urlRecourseList);
+        urlShorteningRepository.addAll(urlRecourseList);
         JobDefinition jobDefinition = bulkURLProcessingJobRepository.find(jobId);
         if (jobId != null && !urlRecourseList.isEmpty()) {
             jobDefinition.setSuccessUrls(urlRecourseList);
@@ -185,7 +191,7 @@ public class ShortenUrlGeneratorServiceImpl implements ShortenUrlGeneratorServic
             MultipartFile file = source.getFile();
             Boolean isKeyAvailableToUse = false;
             JobDefinition jobDefinition = null;
-            Long jobId = 0l;
+            Long jobId = 0L;
             while (!isKeyAvailableToUse) {
                 Random random = new Random();
                 jobId = Math.abs(random.nextLong());
@@ -203,13 +209,13 @@ public class ShortenUrlGeneratorServiceImpl implements ShortenUrlGeneratorServic
             Date date = new Date();
             jobDefinition.setCreatedDate(date);
             bulkURLProcessingJobRepository.add(jobDefinition);
-            ObjectMapper Obj = new ObjectMapper();
+            ObjectMapper obj = new ObjectMapper();
             jobDefinition.setFile(null);
-            String message = Obj.writeValueAsString(jobDefinition);
-            System.out.println(message);
+            String message = obj.writeValueAsString(jobDefinition);
             messagePublisherImpl.publish(message);
         return jobDefinition;
-        }catch (IOException io){
+        }
+        catch (IOException io) {
             throw new FailedToProcessFileException("Failed to Process the File. Please check the file.");
         }
     }
@@ -222,7 +228,7 @@ public class ShortenUrlGeneratorServiceImpl implements ShortenUrlGeneratorServic
      */
     @Override
     public List<UrlResource> findAll(Integer offset, Integer limit) {
-        return URLShorteningRepository.findAllWithLimit(offset, limit);
+        return urlShorteningRepository.findAllWithLimit(offset, limit);
     }
 
     /**
@@ -250,10 +256,11 @@ public class ShortenUrlGeneratorServiceImpl implements ShortenUrlGeneratorServic
      * @return
      */
     @Override
-   public List<UrlResource> getShortUrlsForJob(String jobId){
+   public List<UrlResource> getShortUrlsForJob(String jobId) {
        JobDefinition jobDefinition = bulkURLProcessingJobRepository.find(jobId);
-       if(jobDefinition == null)
+       if (jobDefinition == null) {
            throw new InvalidJobIdentifierException("Provided Job id is invalid.");
+       }
        return jobDefinition.getSuccessUrls();
     }
 }

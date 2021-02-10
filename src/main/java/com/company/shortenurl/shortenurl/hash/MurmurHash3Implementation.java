@@ -17,8 +17,9 @@ public class MurmurHash3Implementation implements com.company.shortenurl.shorten
      */
     @Override
     public String hash32(String text) {
-        if (text == null)
+        if (text == null) {
             return null;
+        }
         HashFunction mHash = Hashing.murmur3_32();
         HashCode hash = mHash.hashBytes(text.getBytes());
         return hash.toString();
@@ -31,8 +32,9 @@ public class MurmurHash3Implementation implements com.company.shortenurl.shorten
      */
     @Override
     public String hash64(String text) {
-        if (text == null)
+        if (text == null) {
             return null;
+        }
         HashFunction mHash = Hashing.murmur3_128();
         HashCode hash = mHash.hashBytes(text.getBytes());
         return hash.toString();
@@ -46,8 +48,9 @@ public class MurmurHash3Implementation implements com.company.shortenurl.shorten
      */
     @Override
     public String hash32(byte[] data, int length) {
-        if (data.length == 0)
+        if (data.length == 0) {
             return null;
+        }
         HashFunction mHash = Hashing.murmur3_32(SEED);
         HashCode hash = mHash.hashBytes(data, 0, length);
         return hash.toString();
@@ -61,8 +64,9 @@ public class MurmurHash3Implementation implements com.company.shortenurl.shorten
      */
     @Override
     public String hash64(byte[] data, int length) {
-        if (data.length == 0)
+        if (data.length == 0) {
             return null;
+        }
         HashFunction mHash = Hashing.murmur3_128(SEED);
         HashCode hash = mHash.hashBytes(data, 0, length);
         return hash.toString();

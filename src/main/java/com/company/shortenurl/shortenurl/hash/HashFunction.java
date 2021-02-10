@@ -5,11 +5,11 @@ package com.company.shortenurl.shortenurl.hash;
  */
 public interface HashFunction {
 
-    public String hash32(final String text);
+     String hash32(String text);
 
-    public String hash64(final String text);
+     String hash64(String text);
 
-    public String hash32(final byte[] data, int length);
+     String hash32(byte[] data, int length);
 
-    public String hash64(final byte[] data, int length);
+     String hash64(byte[] data, int length);
 }

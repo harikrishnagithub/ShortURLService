@@ -1,11 +1,10 @@
 package com.company.shortenurl.shortenurl.service;
 
+import com.company.shortenurl.shortenurl.exceptions.InvalidHashTypeException;
+import com.company.shortenurl.shortenurl.exceptions.NotImplementedException;
 import com.company.shortenurl.shortenurl.model.BulkUrlRequest;
 import com.company.shortenurl.shortenurl.model.JobDefinition;
 import com.company.shortenurl.shortenurl.model.UrlResource;
-import com.company.shortenurl.shortenurl.exceptions.InvalidHashTypeException;
-import com.company.shortenurl.shortenurl.exceptions.InvalidShortUrlException;
-import com.company.shortenurl.shortenurl.exceptions.NotImplementedException;
 
 import java.io.IOException;
 import java.util.List;
@@ -68,6 +67,7 @@ public interface ShortenUrlGeneratorService {
      * @return
      */
     JobDefinition findJob(String jobId);
+
     /**
      * Method to fetch job.
      * @param jobId

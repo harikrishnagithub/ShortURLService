@@ -22,10 +22,26 @@ import java.util.List;
 @Configurable
 public class MessageSubscriber implements MessageListener {
 
-    public static List<String> messageList = new ArrayList<String>();
+    private static List<String> messageList = new ArrayList<String>();
 
     @Autowired
-    AsyncFileProcessingService asyncFileProcessingService;
+    private AsyncFileProcessingService asyncFileProcessingService;
+
+    public static List<String> getMessageList() {
+        return messageList;
+    }
+
+    public static void setMessageList(List<String> messageList) {
+        MessageSubscriber.messageList = messageList;
+    }
+
+    public AsyncFileProcessingService getAsyncFileProcessingService() {
+        return asyncFileProcessingService;
+    }
+
+    public void setAsyncFileProcessingService(AsyncFileProcessingService asyncFileProcessingService) {
+        this.asyncFileProcessingService = asyncFileProcessingService;
+    }
 
     /**
      * Methode for start process the message.
@@ -39,13 +55,15 @@ public class MessageSubscriber implements MessageListener {
         JobDefinition jobDefinition = null;
         try {
             jobDefinition = obj.readValue(message.toString(), JobDefinition.class);
-        } catch (JsonProcessingException e) {
+        }
+        catch (JsonProcessingException e) {
             e.printStackTrace();
         }
         try {
             System.out.println(jobDefinition.toString());
             asyncFileProcessingService.process(jobDefinition.getJobId());
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
         System.out.println("end start " + messageList.size());

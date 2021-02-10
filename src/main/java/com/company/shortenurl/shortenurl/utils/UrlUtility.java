@@ -3,20 +3,13 @@ package com.company.shortenurl.shortenurl.utils;
 import org.apache.commons.text.RandomStringGenerator;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Utility class for performing operations.
@@ -34,7 +27,8 @@ public class UrlUtility {
         try {
             InetAddress systemIP = InetAddress.getLocalHost();
             sb.append(systemIP.getHostAddress());
-        } catch (UnknownHostException e) {
+        }
+        catch (UnknownHostException e) {
             e.printStackTrace();
         }
         sb.append(generateRandomCode());
@@ -60,6 +54,7 @@ public class UrlUtility {
             return false;
         }
     }
+
     /**
      *  Method for Encoding the bytes to string.
      * @param bytes
@@ -84,12 +79,13 @@ public class UrlUtility {
      * @return
      */
     public static File writeByte(byte[] bytes) {
-        String FILEPATH = "Inputfile_"+System.currentTimeMillis()+".txt";
-        File file = new File(FILEPATH);
+        String filePath = "Inputfile_" + System.currentTimeMillis() + ".txt";
+        File file = new File(filePath);
         try {
-            Path path = Paths.get(FILEPATH);
+            Path path = Paths.get(filePath);
             Files.write(path, bytes).getFileSystem();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             System.out.println("Exception during parsing the file: " + e);
         }
         return file;

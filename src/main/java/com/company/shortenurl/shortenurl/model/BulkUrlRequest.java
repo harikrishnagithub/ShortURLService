@@ -9,9 +9,8 @@ import java.io.Serializable;
  */
 public class BulkUrlRequest implements Serializable {
 
-    MultipartFile file;
-    String name;
-
+    private MultipartFile file;
+    private String name;
 
     BulkUrlRequest(MultipartFile file, String name) {
         this.file = file;
@@ -21,6 +20,7 @@ public class BulkUrlRequest implements Serializable {
     public BulkUrlRequest() {
 
     }
+
     public MultipartFile getFile() {
         return file;
     }
@@ -36,11 +36,14 @@ public class BulkUrlRequest implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
+
     @Override
     public String toString() {
-        return "BulkUrlRequest{" +
-                "file=" + file +
-                ", name='" + name + '\'' +
-                '}';
+        return "BulkUrlRequest{"
+                + "file="
+                + file
+                + ", name='" + name
+                + '\''
+                + '}';
     }
 }

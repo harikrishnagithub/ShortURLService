@@ -1,7 +1,5 @@
 package com.company.shortenurl.shortenurl.exceptions;
 
-import java.security.PrivilegedActionException;
-
 public class FailedToProcessFileException extends RuntimeException {
     /**
      * Constructs a new exception with {@code null} as its detail message.

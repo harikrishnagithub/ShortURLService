@@ -9,5 +9,5 @@ public interface AsyncFileProcessingService {
      * @param jobId
      * @throws Exception
      */
-    public void process(String jobId) throws Exception;
+     void process(String jobId) throws Exception;
 }

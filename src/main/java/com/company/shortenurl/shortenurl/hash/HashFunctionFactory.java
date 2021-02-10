@@ -26,8 +26,9 @@ public class HashFunctionFactory {
      * @throws NotImplementedException
      */
     public HashFunction getHashGeneratorFactory() throws InvalidHashTypeException, NotImplementedException {
-        if(hashType == null)
+        if (hashType == null) {
             hashType = HashFunctionType.MURMUR3.getType();
+        }
         HashFunctionType type = HashFunctionType.valueOfType(hashType);
         switch (type) {
             case CRC32:
@@ -38,11 +39,11 @@ public class HashFunctionFactory {
                 throw new NotImplementedException(SHA1 + " is not Implemented yet. It is a upcoming Feature");
             case SHA256:
                 throw new NotImplementedException(SHA256 + " is not Implemented yet. It is a upcoming Feature");
-
             default:
                 throw new InvalidHashTypeException("Invalid hash type Configured. Please change the configuration. ");
         }
     }
+
     public String getHashType() {
         return hashType;
     }

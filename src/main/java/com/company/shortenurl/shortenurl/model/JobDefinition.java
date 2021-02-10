@@ -3,18 +3,19 @@ package com.company.shortenurl.shortenurl.model;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+
 /**
  * Class for holding Job definitions
  */
 public class JobDefinition implements Serializable {
 
-    String jobId;
-    String file;
-    String fileName;
-    JobStatus status;
-    List<String> failedUrls;
-    List<UrlResource> successUrls;
-    Date createdDate;
+    private String jobId;
+    private String file;
+    private String fileName;
+    private JobStatus status;
+    private List<String> failedUrls;
+    private List<UrlResource> successUrls;
+    private Date createdDate;
 
     public JobDefinition() {
     }

@@ -59,7 +59,6 @@ public class UrlShorteningRepositoryImpl implements UrlShorteningRepository {
         return hashOperations.get(KEY, String.valueOf(id));
     }
 
-
     @Override
     public Map<String, UrlResource> findAll() {
         return hashOperations.entries(KEY);

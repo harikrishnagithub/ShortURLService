@@ -32,7 +32,7 @@ public interface UrlShorteningRepository {
      *
      * @param urlRecourseList
      */
-    void addAll(final List<UrlResource> urlRecourseList);
+    void addAll(List<UrlResource> urlRecourseList);
 
     /**
      * Delete a key-value pair in Redis.

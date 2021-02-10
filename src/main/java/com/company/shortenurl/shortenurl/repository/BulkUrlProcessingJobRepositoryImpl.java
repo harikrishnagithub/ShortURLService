@@ -55,13 +55,8 @@ public class BulkUrlProcessingJobRepositoryImpl implements BulkUrlProcessingJobR
         return hashOperations.entries(KEY);
     }
 
-    /**
-     * Return all Jobs
-     */
     @Override
     public List<JobDefinition> findActiveJobs() {
         return hashOperations.values(KEY).stream().filter(e -> e.getStatus() == JobStatus.INPROGRESS).collect(Collectors.toList());
     }
-
-
 }

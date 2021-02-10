@@ -5,5 +5,7 @@
         "https://checkstyle.org/dtds/suppressions_1_2.dtd">
 
 <suppressions>
-
+    <suppressions>
+        <suppress files="TU_*.java" checks="[a-zA-Z0-9]*"/>
+    </suppressions>
 </suppressions>

@@ -1,27 +1,26 @@
 package com.company.shortenurl.shortenurl.controller;
 
+import com.company.shortenurl.shortenurl.exceptions.InvalidHashTypeException;
+import com.company.shortenurl.shortenurl.exceptions.InvalidShortUrlException;
+import com.company.shortenurl.shortenurl.exceptions.NotImplementedException;
 import com.company.shortenurl.shortenurl.model.BulkUrlRequest;
 import com.company.shortenurl.shortenurl.model.BulkUrlRequestBuilder;
 import com.company.shortenurl.shortenurl.model.JobDefinition;
 import com.company.shortenurl.shortenurl.model.UrlResource;
-import com.company.shortenurl.shortenurl.exceptions.InvalidHashTypeException;
-import com.company.shortenurl.shortenurl.exceptions.InvalidShortUrlException;
-import com.company.shortenurl.shortenurl.exceptions.NotImplementedException;
 import com.company.shortenurl.shortenurl.service.ShortenUrlGeneratorService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.websocket.server.PathParam;
 import java.io.IOException;
 import java.util.List;
 
@@ -49,7 +48,15 @@ import java.util.List;
 )
 public class ShortenUrlGeneratorController {
     @Autowired
-    ShortenUrlGeneratorService shortenUrlGeneratorService;
+    private ShortenUrlGeneratorService shortenUrlGeneratorService;
+
+    public ShortenUrlGeneratorService getShortenUrlGeneratorService() {
+        return shortenUrlGeneratorService;
+    }
+
+    public void setShortenUrlGeneratorService(ShortenUrlGeneratorService shortenUrlGeneratorService) {
+        this.shortenUrlGeneratorService = shortenUrlGeneratorService;
+    }
 
     @GetMapping("/{shortenUrl}")
     public @ResponseBody
@@ -86,12 +93,14 @@ public class ShortenUrlGeneratorController {
     List<JobDefinition> getAllActiveJobs() throws InvalidShortUrlException {
         return shortenUrlGeneratorService.getAllActiveJobs();
     }
+
     @GetMapping("/job/")
     public @ResponseBody
     JobDefinition getJob(@RequestParam("jobid") String jobId) throws InvalidShortUrlException {
         return shortenUrlGeneratorService.findJob(jobId);
     }
-    @GetMapping(path="/shorturls/",params = {"jobid"})
+
+    @GetMapping(path = "/shorturls/", params = {"jobid"})
     public @ResponseBody
     List<UrlResource> getShortUrlsForJob(@RequestParam("jobid") String jobId) throws InvalidShortUrlException {
         return shortenUrlGeneratorService.getShortUrlsForJob(jobId);

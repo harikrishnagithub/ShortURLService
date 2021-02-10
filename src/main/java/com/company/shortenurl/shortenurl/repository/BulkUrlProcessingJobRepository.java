@@ -20,7 +20,7 @@ public interface BulkUrlProcessingJobRepository {
      */
     List<JobDefinition> findActiveJobs();
 
-    void update(final JobDefinition job);
+    void update(JobDefinition job);
 
     /**
      * Add key-value pair to Redis.
@@ -30,7 +30,7 @@ public interface BulkUrlProcessingJobRepository {
     /**
      * Delete a key-value pair in Redis.
      */
-    void deleteJob(final String id);
+    void deleteJob(String id);
 
     /**
      * find a Job Definition

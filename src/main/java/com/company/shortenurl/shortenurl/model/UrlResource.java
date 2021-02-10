@@ -53,10 +53,11 @@ public class UrlResource implements Serializable {
 
     @Override
     public String toString() {
-        return "URLResourse{" +
-                "shortUrl='" + shortUrl + '\'' +
-                ", originalUrl='" + originalUrl + '\'' +
-                '}';
+        return "URLResourse{"
+                + "shortUrl='" + shortUrl + '\''
+                + ", originalUrl='" + originalUrl
+                + '\''
+                + '}';
     }
 
 }

@@ -12,12 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -32,12 +28,30 @@ import java.util.stream.Stream;
 public class AsyncFileProcessingServiceImpl implements AsyncFileProcessingService {
 
     @Autowired
-    BulkUrlProcessingJobRepository bulkURLProcessingJobRepository;
+    private BulkUrlProcessingJobRepository bulkURLProcessingJobRepository;
+
+    public BulkUrlProcessingJobRepository getBulkURLProcessingJobRepository() {
+        return bulkURLProcessingJobRepository;
+    }
+
+    public void setBulkURLProcessingJobRepository(BulkUrlProcessingJobRepository bulkURLProcessingJobRepository) {
+        this.bulkURLProcessingJobRepository = bulkURLProcessingJobRepository;
+    }
+
+    public ShortenUrlGeneratorService getShortenUrlGeneratorService() {
+        return shortenUrlGeneratorService;
+    }
+
+    public void setShortenUrlGeneratorService(ShortenUrlGeneratorService shortenUrlGeneratorService) {
+        this.shortenUrlGeneratorService = shortenUrlGeneratorService;
+    }
+
     @Autowired
-    ShortenUrlGeneratorService shortenUrlGeneratorService;
+    private ShortenUrlGeneratorService shortenUrlGeneratorService;
 
     @Value("${application.custom.processslotsize}")
     private Integer counter;
+
     /**
      * Method to start processing the job.
      * @param jobId
@@ -45,8 +59,9 @@ public class AsyncFileProcessingServiceImpl implements AsyncFileProcessingServic
      */
     public void process(String jobId) {
         JobDefinition jobDefinition = bulkURLProcessingJobRepository.find(jobId);
-        if (jobDefinition == null)
+        if (jobDefinition == null) {
             throw new InvalidJobIdentifierException("Invalid Job identifier");
+        }
         jobDefinition.setStatus(JobStatus.INPROGRESS);
         bulkURLProcessingJobRepository.update(jobDefinition);
         String encodedString = jobDefinition.getFile();
@@ -56,7 +71,8 @@ public class AsyncFileProcessingServiceImpl implements AsyncFileProcessingServic
         try {
             Stream<String> stream = Files.lines(Paths.get(file.getAbsolutePath()));
             result = stream.collect(Collectors.toList());
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             System.err.println(e.getMessage());
         }
         int skip = 0;
@@ -64,7 +80,8 @@ public class AsyncFileProcessingServiceImpl implements AsyncFileProcessingServic
             List<String> list = result.stream().skip(skip).limit(counter).collect(Collectors.toList());
             try {
                 shortenUrlGeneratorService.bulkGenerateShortenUrl(jobId, list);
-            } catch (InvalidHashTypeException | NotImplementedException e) {
+            }
+            catch (InvalidHashTypeException | NotImplementedException e) {
                 throw new InvalidShortUrlException("Failed to generate bulk short URL for the given file.");
             }
             skip += counter;
@@ -74,6 +91,7 @@ public class AsyncFileProcessingServiceImpl implements AsyncFileProcessingServic
         jobDefinition.setFile(null);
         bulkURLProcessingJobRepository.update(jobDefinition);
     }
+
     public Integer getCounter() {
         return counter;
     }
