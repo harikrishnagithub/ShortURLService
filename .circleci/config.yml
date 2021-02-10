@@ -41,10 +41,13 @@ jobs:
 
       # run tests!
       - run: gradle test
+      - run: gradle checkstyleMain
   lint:
     executor: default
     steps:
-      - run: gradle checkstyle
+      - attach_workspace: &attach
+          at: ~/
+      - run: ./gradlew checkstyleMain
 
 workflows:
   build_and_test:
