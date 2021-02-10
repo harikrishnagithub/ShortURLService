@@ -2,6 +2,7 @@ plugins {
 	id 'org.springframework.boot' version '2.3.1.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
 	id 'java'
+	id 'checkstyle'
 }
 
 group = 'com.company.ShortenUrl'
@@ -33,7 +34,16 @@ dependencies {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
 }
-
+checkstyle {
+	// assign the latest checkstyle version explicitly
+	// default version is very old, likes 5.9
+	toolVersion = '8.6'
+	// checkstyle.xml copy from:
+	// https://raw.githubusercontent.com/checkstyle/checkstyle/checkstyle-8.6/src/main/resources/google_checks.xml
+	// the version should be as same as plugin version
+	configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+}
 test {
 	useJUnitPlatform()
 }
+
